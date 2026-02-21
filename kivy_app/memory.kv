@@ -1,0 +1,465 @@
+#: kivy 2.3.0
+#: import get_color_from_hex kivy.utils.get_color_from_hex
+#: import dp kivy.metrics.dp
+#: import Factory kivy.factory.Factory
+
+# ══════════════════════════════════════════════════════════
+#  Styles globaux
+# ══════════════════════════════════════════════════════════
+<Label>:
+    font_size: dp(16)
+    color: 1, 1, 1, 1
+
+<Button>:
+    font_size: dp(16)
+    bold: True
+    color: 1, 1, 1, 1
+    background_normal: ''
+    background_color: 0.42, 0.39, 1, 1
+    border_radius: [dp(12)]
+
+# ══════════════════════════════════════════════════════════
+#  ÉCRAN MENU
+# ══════════════════════════════════════════════════════════
+<EcranMenu>:
+    canvas.before:
+        Color:
+            rgba: 0.05, 0.05, 0.10, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        # Dégradé haut (violet)
+        Color:
+            rgba: 0.42, 0.39, 1, 0.25
+        Ellipse:
+            pos: -self.width*0.3, self.height*0.5
+            size: self.width*1.1, self.height*0.8
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(40)
+        spacing: dp(20)
+
+        Widget:
+            size_hint_y: 0.08
+
+        # LOGO / TITRE
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: dp(160)
+            spacing: dp(8)
+
+            Label:
+                text: '🎮'
+                font_size: dp(72)
+                size_hint_y: None
+                height: dp(90)
+
+            Label:
+                text: 'JEU DE MÉMOIRE'
+                font_size: dp(28)
+                bold: True
+                color: 0.85, 0.82, 1, 1
+
+            Label:
+                text: 'Retrouvez toutes les paires !'
+                font_size: dp(14)
+                color: 0.55, 0.55, 0.75, 1
+
+        Widget:
+            size_hint_y: 0.05
+
+        # BOUTONS MENU
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: dp(16)
+            size_hint_x: 0.82
+            pos_hint: {'center_x': 0.5}
+
+            Button:
+                text: '🚀  Nouvelle Partie'
+                size_hint_y: None
+                height: dp(58)
+                background_color: 0.42, 0.39, 1, 1
+                font_size: dp(18)
+                on_press: root.manager.current = 'parametres'
+
+            Button:
+                text: '🏆  Classement'
+                size_hint_y: None
+                height: dp(58)
+                background_color: 0.25, 0.22, 0.55, 1
+                font_size: dp(18)
+                on_press: root.manager.current = 'classement'
+
+            Button:
+                text: '(i)  À Propos'
+                size_hint_y: None
+                height: dp(58)
+                background_color: 0.20, 0.18, 0.45, 1
+                font_size: dp(18)
+                on_press: root.manager.current = 'apropos'
+
+        Widget:
+            size_hint_y: 1
+
+        Label:
+            text: 'v1.0  •  Fait avec Kivy'
+            font_size: dp(11)
+            color: 0.35, 0.35, 0.55, 1
+            size_hint_y: None
+            height: dp(24)
+
+
+# ══════════════════════════════════════════════════════════
+#  ÉCRAN PARAMÈTRES
+# ══════════════════════════════════════════════════════════
+<EcranParametres>:
+    canvas.before:
+        Color:
+            rgba: 0.05, 0.05, 0.10, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    ScrollView:
+        BoxLayout:
+            orientation: 'vertical'
+            padding: dp(24)
+            spacing: dp(18)
+            size_hint_y: None
+            height: self.minimum_height
+
+            # En-tête
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: dp(50)
+                spacing: dp(12)
+                Button:
+                    text: '←'
+                    size_hint_x: None
+                    width: dp(50)
+                    height: dp(44)
+                    background_color: 0.2, 0.2, 0.4, 1
+                    on_press: root.manager.current = 'menu'
+                Label:
+                    text: '⚙️  Configuration'
+                    font_size: dp(22)
+                    bold: True
+                    halign: 'left'
+                    valign: 'middle'
+
+            # ── Nombre de joueurs ──
+            Label:
+                text: '👥  Nombre de joueurs'
+                font_size: dp(15)
+                color: 0.7, 0.7, 1, 1
+                halign: 'left'
+                size_hint_y: None
+                height: dp(30)
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: dp(50)
+                spacing: dp(10)
+                Button:
+                    text: '1 Joueur'
+                    background_color: (0.42, 0.39, 1, 1) if root.nb_joueurs == 1 else (0.18, 0.18, 0.35, 1)
+                    on_press: root.set_nb_joueurs(1)
+                Button:
+                    text: '2 Joueurs'
+                    background_color: (0.42, 0.39, 1, 1) if root.nb_joueurs == 2 else (0.18, 0.18, 0.35, 1)
+                    on_press: root.set_nb_joueurs(2)
+                Button:
+                    text: '3 Joueurs'
+                    background_color: (0.42, 0.39, 1, 1) if root.nb_joueurs == 3 else (0.18, 0.18, 0.35, 1)
+                    on_press: root.set_nb_joueurs(3)
+                Button:
+                    text: '4 Joueurs'
+                    background_color: (0.42, 0.39, 1, 1) if root.nb_joueurs == 4 else (0.18, 0.18, 0.35, 1)
+                    on_press: root.set_nb_joueurs(4)
+
+            # ── Noms joueurs ──
+            Label:
+                text: '✏️  Noms des joueurs'
+                font_size: dp(15)
+                color: 0.7, 0.7, 1, 1
+                halign: 'left'
+                size_hint_y: None
+                height: dp(30)
+
+            BoxLayout:
+                id: conteneur_joueurs
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(8)
+
+            # ── Thème ──
+            Label:
+                text: '🎨  Thème'
+                font_size: dp(15)
+                color: 0.7, 0.7, 1, 1
+                halign: 'left'
+                size_hint_y: None
+                height: dp(30)
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: dp(50)
+                spacing: dp(10)
+                Button:
+                    text: '🐾 Animaux'
+                    background_color: (0.42,0.39,1,1) if root.theme_choisi == 'animaux' else (0.18,0.18,0.35,1)
+                    on_press: root.set_theme('animaux')
+                Button:
+                    text: '🍎 Fruits'
+                    background_color: (0.42,0.39,1,1) if root.theme_choisi == 'fruits' else (0.18,0.18,0.35,1)
+                    on_press: root.set_theme('fruits')
+                Button:
+                    text: '✨ Symboles'
+                    background_color: (0.42,0.39,1,1) if root.theme_choisi == 'symboles' else (0.18,0.18,0.35,1)
+                    on_press: root.set_theme('symboles')
+
+            # ── Difficulté ──
+            Label:
+                text: '⚡  Difficulté'
+                font_size: dp(15)
+                color: 0.7, 0.7, 1, 1
+                halign: 'left'
+                size_hint_y: None
+                height: dp(30)
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: dp(50)
+                spacing: dp(10)
+                Button:
+                    text: '😊 Facile'
+                    background_color: (0.2,0.75,0.4,1) if root.diff_choisie == 'Facile' else (0.18,0.18,0.35,1)
+                    on_press: root.set_diff('Facile')
+                Button:
+                    text: '🙂 Moyen'
+                    background_color: (0.9,0.7,0.1,1) if root.diff_choisie == 'Moyen' else (0.18,0.18,0.35,1)
+                    on_press: root.set_diff('Moyen')
+                Button:
+                    text: '😤 Difficile'
+                    background_color: (0.9,0.4,0.1,1) if root.diff_choisie == 'Difficile' else (0.18,0.18,0.35,1)
+                    on_press: root.set_diff('Difficile')
+                Button:
+                    text: '💀 Expert'
+                    background_color: (0.8,0.1,0.1,1) if root.diff_choisie == 'Expert' else (0.18,0.18,0.35,1)
+                    on_press: root.set_diff('Expert')
+
+            Widget:
+                size_hint_y: None
+                height: dp(20)
+
+            # ── Lancer ──
+            Button:
+                text: '▶  Lancer la Partie !'
+                size_hint_y: None
+                height: dp(60)
+                background_color: 0.42, 0.39, 1, 1
+                font_size: dp(20)
+                bold: True
+                on_press: root.lancer()
+
+            Widget:
+                size_hint_y: None
+                height: dp(20)
+
+
+# ══════════════════════════════════════════════════════════
+#  ÉCRAN JEU
+# ══════════════════════════════════════════════════════════
+<EcranJeu>:
+    canvas.before:
+        Color:
+            rgba: 0.05, 0.05, 0.10, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: dp(6)
+        padding: [dp(8), dp(8), dp(8), dp(8)]
+
+        # ── HUD supérieur ──
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: dp(90)
+            spacing: dp(4)
+
+            Label:
+                text: root.joueur_texte
+                font_size: dp(18)
+                bold: True
+                color: 0.85, 0.82, 1, 1
+                size_hint_y: None
+                height: dp(28)
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: dp(28)
+                spacing: dp(24)
+                Label:
+                    text: root.score_texte
+                    font_size: dp(15)
+                    color: 0.4, 1, 0.6, 1
+                Label:
+                    text: root.paires_texte
+                    font_size: dp(15)
+                    color: 0.9, 0.8, 0.3, 1
+                Label:
+                    text: root.coups_texte
+                    font_size: dp(15)
+                    color: 0.6, 0.8, 1, 1
+
+            Label:
+                text: root.info_texte
+                font_size: dp(14)
+                color: 0.75, 0.75, 0.95, 1
+                size_hint_y: None
+                height: dp(22)
+
+        # ── Plateau ──
+        GridLayout:
+            id: grille_cartes
+            cols: 4
+            spacing: dp(6)
+            padding: dp(4)
+            size_hint_y: 1
+
+        # ── Bouton quitter ──
+        Button:
+            text: '🏠 Menu'
+            size_hint_y: None
+            height: dp(44)
+            background_color: 0.2, 0.2, 0.4, 1
+            font_size: dp(14)
+            on_press: root.manager.current = 'menu'
+
+
+# ══════════════════════════════════════════════════════════
+#  ÉCRAN CLASSEMENT
+# ══════════════════════════════════════════════════════════
+<EcranClassement>:
+    canvas.before:
+        Color:
+            rgba: 0.05, 0.05, 0.10, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(24)
+        spacing: dp(16)
+
+        # En-tête
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: dp(50)
+            spacing: dp(12)
+            Button:
+                text: '←'
+                size_hint_x: None
+                width: dp(50)
+                background_color: 0.2, 0.2, 0.4, 1
+                on_press: root.manager.current = 'menu'
+            Label:
+                text: '🏆  Classement'
+                font_size: dp(24)
+                bold: True
+                halign: 'left'
+                valign: 'middle'
+
+        # Ligne décorative
+        BoxLayout:
+            size_hint_y: None
+            height: dp(2)
+            canvas:
+                Color:
+                    rgba: 0.42, 0.39, 1, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+        # Liste des scores
+        ScrollView:
+            BoxLayout:
+                id: liste_classement
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(8)
+                padding: [0, dp(8)]
+
+
+# ══════════════════════════════════════════════════════════
+#  ÉCRAN À PROPOS
+# ══════════════════════════════════════════════════════════
+<EcranAPropos>:
+    canvas.before:
+        Color:
+            rgba: 0.05, 0.05, 0.10, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(24)
+        spacing: dp(16)
+
+        # En-tête
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: dp(50)
+            spacing: dp(12)
+            Button:
+                text: '<-'
+                size_hint_x: None
+                width: dp(50)
+                background_color: 0.2, 0.2, 0.4, 1
+                font_size: dp(18)
+                on_press: root.manager.current = 'menu'
+            Label:
+                text: '(i)  À Propos'
+                font_size: dp(24)
+                bold: True
+                halign: 'left'
+                valign: 'middle'
+                color: 0.85, 0.82, 1, 1
+
+        # Ligne décorative
+        BoxLayout:
+            size_hint_y: None
+            height: dp(2)
+            canvas:
+                Color:
+                    rgba: 0.42, 0.39, 1, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+        # Contenu du À propos
+        ScrollView:
+            BoxLayout:
+                id: contenu_apropos
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(12)
+                padding: [dp(8), dp(16)]

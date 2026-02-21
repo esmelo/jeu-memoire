@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+*.egg-info/
+dist/
+build/
+
+# Kivy build
+.buildozer/
+bin/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Game data
+scores.json
+*.log
+
+# Build artifacts
+*.apk
+*.aab
+*.keystore
