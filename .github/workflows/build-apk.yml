@@ -1,0 +1,75 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Java JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq \
+          build-essential git \
+          unzip zip \
+          libssl-dev libffi-dev libsqlite3-dev libbz2-dev \
+          libncurses5 libncurses5-dev libncursesw5 libreadline-dev \
+          liblzma-dev zlib1g-dev pkg-config \
+          libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+    
+    - name: Install Python packages
+      run: |
+        python -m pip install -q --upgrade pip
+        python -m pip install -q buildozer cython kivy pydantic
+    
+    - name: Build APK (debug)
+      working-directory: ./kivy_app
+      run: |
+        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+        buildozer android debug 2>&1 | tail -50
+      timeout-minutes: 120
+    
+    - name: Upload APK as artifact
+      if: success()
+      uses: actions/upload-artifact@v3
+      with:
+        name: apk-debug
+        path: kivy_app/bin/jeumemoire-1.0-debug.apk
+        retention-days: 30
+    
+    - name: Create Release and Upload APK
+      if: success()
+      run: |
+        if [ ! -f "kivy_app/bin/jeumemoire-1.0-debug.apk" ]; then
+          echo "APK not found!"
+          exit 1
+        fi
+        
+        # Create release if it doesn't exist
+        VERSION=$(date +%Y.%m.%d)
+        RELEASE_NAME="APK Build - $VERSION"
+        
+        gh release create "apk-$VERSION" "kivy_app/bin/jeumemoire-1.0-debug.apk" \
+          --title "$RELEASE_NAME" \
+          --notes "Automatic APK build for Jeu de Mémoire" \
+          --prerelease 2>/dev/null || true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
