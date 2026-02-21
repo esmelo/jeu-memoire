@@ -1,0 +1,118 @@
+
+==========================================
+📱 COMPILATION APK - GUIDE COMPLET
+==========================================
+
+⚠️  PRÉREQUIS:
+- WSL2 (Windows Subsystem for Linux) OU
+- Machine Linux/Mac
+- Java JDK 11+
+- Android SDK/NDK
+
+==========================================
+🚀 OPTION 1: WSL2 (Recommandé pour Windows)
+==========================================
+
+1. Installer WSL2:
+   • Ouvrir PowerShell (Admin)
+   • Taper: wsl --install
+   • Redémarrer l'ordinateur
+   • Ubuntu s'installe automatiquement
+   
+2. Ouvrir Ubuntu (WSL) et installer les outils:
+
+   $ sudo apt update && sudo apt upgrade
+   $ sudo apt install python3-pip python3-dev
+   $ pip install buildozer cython
+   $ pip install pydantic kivy
+   
+3. Copier le projet dans WSL:
+   
+   # Depuis PowerShell
+   $ cp -r "C:\Users\ACER\Desktop\Claude\kivy_app" ~/jeu-memoire
+   
+4. Compiler l'APK:
+   
+   $ cd ~/jeu-memoire
+   $ buildozer android release
+   
+   # Cela peut prendre 15-30 minutes (1ère fois)
+   
+5. APK généré à:
+   
+   ~/jeu-memoire/bin/jeumemoire-1.0-release.apk
+
+==========================================
+📲 INSTALLATION SUR TÉLÉPHONE
+==========================================
+
+Option A: Avec ADB (Android Debug Bridge)
+----
+$ adb connect <IP_DEVICE>:5555
+$ adb install bin/jeumemoire-1.0-release.apk
+
+Option B: Copier fichier + installer manuellement
+----
+1. Brancher téléphone USB
+2. Activer "USB Debugging" (modes développeur)
+3. Copier APK sur téléphone
+4. Ouvrir fichier → Installer
+
+==========================================
+🔑 SIGNING APK (Production)
+==========================================
+
+Créer une clé:
+$ keytool -genkey -v -keystore jeu-memoire.keystore \
+  -keyalg RSA -keysize 2048 -validity 10000 \
+  -alias jeu-memoire-key
+
+Ajouter à buildozer.spec:
+[app:android]
+android.keystore = 1
+android.keystore_path = (~/.keystore/jeu-memoire.keystore)
+android.keystore_alias = jeu-memoire-key
+
+Puis recompiler:
+$ buildozer android release
+
+==========================================
+📤 UPLOAD À GOOGLE DRIVE / GITHUB
+==========================================
+
+1. GitHub Releases:
+   $ gh release create v1.0 bin/jeumemoire-1.0-release.apk
+
+2. Google Drive:
+   • Ouvrir drive.google.com
+   • Upload le fichier APK
+   • Partager le lien
+
+==========================================
+❓ DÉPANNAGE
+==========================================
+
+Erreur "JAVA_HOME not found":
+→ $ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+
+Erreur "Android SDK not found":
+→ Installer: $ android update sdk --no-ui
+
+Erreur "gradle build timeout":
+→ Augmenter timeout: $ buildozer android release -- --gradle_dependencies=yes
+
+Build freeze:
+→ Nettoyer: $ buildozer android clean
+→ Puis: $ buildozer android release
+
+==========================================
+✅ SUCCÈS!
+==========================================
+
+Félicitations! Votre APK est prête à:
+- Tester sur le téléphone
+- Partager avec amis
+- Publier sur Google Play Store
+
+Pour Play Store: Signer avec clé + versioning
+
