@@ -27,11 +27,12 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update -qq
+        # Use generic ncurses dev packages (libncurses5/ libncursesw5 may be unavailable)
         sudo apt-get install -y -qq \
           build-essential git \
           unzip zip \
           libssl-dev libffi-dev libsqlite3-dev libbz2-dev \
-          libncurses5 libncurses5-dev libncursesw5 libreadline-dev \
+          libncurses-dev libreadline-dev \
           liblzma-dev zlib1g-dev pkg-config \
           libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
     
